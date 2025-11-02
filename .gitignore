@@ -1,105 +1,37 @@
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Ww][Ii][Nn]32/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+# Build & publish
+bin/
+obj/
+dist/
+publish/
+build/
+artifacts/
 
-# Visual Studio cache/options
-.vs/
+# User-specific files
 .vscode/
-*.suo
+.idea/
 *.user
+*.suo
 *.userosscache
 *.sln.docstates
 
-# Build results
-*_i.c
-*_p.c
-*_h.h
-*.ilk
-*.meta
-*.obj
-*.iobj
-*.pch
-*.pdb
-*.ipdb
-*.pgc
-*.pgd
-*.rsp
-*.sbr
-*.tlb
-*.tli
-*.tlh
-*.tmp
-*.tmp_proj
-*_wpftmp.csproj
-*.log
-*.vspscc
-*.vssscc
-.builds
-*.pidb
-*.svclog
-*.scc
-
-# NuGet Packages
-*.nupkg
-**/packages/*
-!**/packages/build/
-*.nuget.props
-*.nuget.targets
-
-# .NET Core
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-# Frontend
-frontend/node_modules/
-frontend/build/
-frontend/.env
-frontend/.env.local
-frontend/.env.development.local
-frontend/.env.test.local
-frontend/.env.production.local
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
-frontend/.pnp
-frontend/.pnp.js
-frontend/coverage
-
-# IDE
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Database
-*.mdf
-*.ldf
-*.ndf
-
-# Configuration files with sensitive data
-appsettings.json
-appsettings.*.json
-!appsettings.Development.json.example
-
 # Logs
 *.log
-logs/
+Logs/
+log/
+*.tlog
 
-# Temporary files
-*.tmp
-*.temp
+# Node / JS output (frontend or wwwroot)
+node_modules/
+src/FleetTrack360.API/wwwroot/js/
+src/FleetTrack360.API/wwwroot/lib/
+*.map
+*.min.js
+*.bundle.js
 
+# Configuration files (local secrets)
+src/FleetTrack360.API/appsettings.json
+*.config
+
+# OS
+Thumbs.db
+.DS_Store
