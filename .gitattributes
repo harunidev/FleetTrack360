@@ -1,14 +1,8 @@
-# C# ve .NET dosyaları kesin olarak C# say
 *.cs linguist-language=C#
 *.csproj linguist-language=C#
 *.sln linguist-language=C#
-
-# JavaScript klasörlerini analizden çıkar
-src/FleetTrack360.API/wwwroot/js/* linguist-vendored
-src/FleetTrack360.API/wwwroot/lib/* linguist-vendored
-node_modules/* linguist-vendored
-
-# JSON ve yapı dosyalarını hariç tut
 *.json linguist-vendored
 *.config linguist-vendored
-
+node_modules/* linguist-vendored
+src/FleetTrack360.API/wwwroot/js/* linguist-vendored
+src/FleetTrack360.API/wwwroot/lib/* linguist-vendored
