@@ -1,8 +1,9 @@
 *.cs linguist-language=C#
 *.csproj linguist-language=C#
 *.sln linguist-language=C#
+
+*.js linguist-vendored
+*.css linguist-vendored
+*.html linguist-vendored
 *.json linguist-vendored
 *.config linguist-vendored
-node_modules/* linguist-vendored
-src/FleetTrack360.API/wwwroot/js/* linguist-vendored
-src/FleetTrack360.API/wwwroot/lib/* linguist-vendored

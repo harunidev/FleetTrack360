@@ -35,3 +35,11 @@ src/FleetTrack360.API/appsettings.json
 # OS
 Thumbs.db
 .DS_Store
+# JavaScript & Frontend build klasörleri
+node_modules/
+src/FleetTrack360.API/wwwroot/js/
+src/FleetTrack360.API/wwwroot/lib/
+*.map
+*.min.js
+*.bundle.js
+*.js
