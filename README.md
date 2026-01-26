@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # FleetTrack360
 
 A comprehensive fleet and route management platform built with **.NET 8** and **React**, following clean architecture principles. This full-stack application implements modern web development practices with real-time data synchronization between frontend, backend, and database.
@@ -342,6 +342,3 @@ harunidev - [GitHub](https://github.com/harunidev)
 ---
 
 **Note**: This application is designed for local development and may require additional configuration for production deployment.
-=======
-# FleetTrack360
->>>>>>> b0eac0cd3adde69fcdf0c5ec70222a7f328b0e7c

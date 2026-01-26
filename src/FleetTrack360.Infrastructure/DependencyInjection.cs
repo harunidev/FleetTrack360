@@ -11,8 +11,17 @@ namespace FleetTrack360.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<FleetTrack360DbContext>(options =>
-                options.UseSqlServer(connectionString));
+            // SQLite kullan (development için daha kolay)
+            if (connectionString.Contains("Data Source=") || connectionString == "SQLite")
+            {
+                services.AddDbContext<FleetTrack360DbContext>(options =>
+                    options.UseSqlite("Data Source=fleettrack360.db"));
+            }
+            else
+            {
+                services.AddDbContext<FleetTrack360DbContext>(options =>
+                    options.UseSqlServer(connectionString));
+            }
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
