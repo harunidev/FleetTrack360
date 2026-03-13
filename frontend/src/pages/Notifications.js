@@ -55,9 +55,10 @@ const Notifications = () => {
 
   const filteredNotifications = notifications.filter(notification => {
     const vehicle = getVehicleByLicensePlate(notification.vehicleId);
-    const matchesSearch = vehicle && (
+
+    const matchesSearch = searchTerm.trim() === '' || (
       notification.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+      (vehicle && vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     let matchesFilter = true;

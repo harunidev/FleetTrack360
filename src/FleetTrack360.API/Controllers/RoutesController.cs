@@ -48,6 +48,18 @@ namespace FleetTrack360.API.Controllers
                     return BadRequest("Route information cannot be empty.");
                 }
 
+                if (route.VehicleId == Guid.Empty)
+                    return BadRequest("Geçerli bir araç seçilmelidir.");
+
+                if (string.IsNullOrWhiteSpace(route.StartLocation) || string.IsNullOrWhiteSpace(route.EndLocation))
+                    return BadRequest("Başlangıç ve bitiş konumları boş olamaz.");
+
+                if (route.EndTime <= route.StartTime)
+                    return BadRequest("Bitiş zamanı başlangıç zamanından sonra olmalıdır.");
+
+                if (route.DistanceKm <= 0)
+                    return BadRequest("Mesafe pozitif bir değer olmalıdır.");
+
                 // Status defaults to NotStarted
                 route.Status = FleetTrack360.Domain.Entities.RouteStatus.NotStarted;
 

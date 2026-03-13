@@ -47,6 +47,21 @@ namespace FleetTrack360.API.Controllers
                     return BadRequest("Vehicle information cannot be empty.");
                 }
 
+                if (string.IsNullOrWhiteSpace(vehicle.LicensePlate))
+                    return BadRequest("Plaka boş olamaz.");
+
+                if (string.IsNullOrWhiteSpace(vehicle.Make) || string.IsNullOrWhiteSpace(vehicle.Model))
+                    return BadRequest("Marka ve model boş olamaz.");
+
+                if (vehicle.Year < 1900 || vehicle.Year > DateTime.Now.Year + 1)
+                    return BadRequest("Geçersiz araç yılı.");
+
+                if (vehicle.FuelLevel < 0 || vehicle.FuelLevel > 100)
+                    return BadRequest("Yakıt seviyesi 0-100 arasında olmalıdır.");
+
+                if (vehicle.Mileage < 0)
+                    return BadRequest("Kilometre negatif olamaz.");
+
                 // Reset ID (backend will generate new ID for new record)
                 vehicle.Id = Guid.Empty;
                 // Clear navigation property

@@ -2,6 +2,9 @@
   "ConnectionStrings": {
     "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=fleettrack360;Integrated Security=true;TrustServerCertificate=true;"
   },
+  "Jwt": {
+    "Secret": "CHANGE_THIS_TO_A_STRONG_SECRET_AT_LEAST_32_CHARS"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
