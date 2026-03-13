@@ -70,11 +70,12 @@ const Routes = () => {
   };
 
   const filteredRoutes = routes.filter(route => {
+    if (searchTerm.trim() === '') return true;
     const vehicle = vehicles.find(v => v.id === route.vehicleId);
-    return vehicle && (
+    return (
       route.startLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.endLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+      (vehicle && vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
 

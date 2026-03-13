@@ -1,3 +1,24 @@
+# SQLite database files (regenerated at runtime)
+*.db
+*.db-shm
+*.db-wal
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+appsettings.*.json
+!appsettings.json.example
+src/FleetTrack360.API/appsettings.Development.json
+src/FleetTrack360.API/appsettings.Production.json
+*.pfx
+*.p12
+*.pem
+*.key
+secrets.json
+*secret*
+*credential*
+
 # Build & publish
 bin/
 obj/

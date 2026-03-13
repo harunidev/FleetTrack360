@@ -21,6 +21,9 @@ namespace FleetTrack360.Domain.Entities
         public string PasswordHash { get; set; } = string.Empty;
 
         [Required]
+        public string PasswordSalt { get; set; } = string.Empty;
+
+        [Required]
         public UserRole Role { get; set; } = UserRole.Driver;
     }
 }
