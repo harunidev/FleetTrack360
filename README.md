@@ -1,344 +1,408 @@
-
 # FleetTrack360
 
-A comprehensive fleet and route management platform built with **.NET 8** and **React**, following clean architecture principles. This full-stack application implements modern web development practices with real-time data synchronization between frontend, backend, and database.
+<div align="center">
 
-## ✨ Features
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet)
+![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.3-06B6D4?style=for-the-badge&logo=tailwindcss)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-- **Clean Architecture** with separate Domain, Application, Infrastructure, and API layers
-- **ASP.NET Core Web API** with RESTful endpoints for vehicles, routes, reports, and notifications
-- **React Frontend** with modern UI/UX and real-time dashboard updates
-- **Entity Framework Core** with SQL Server database integration
-- **Real-time Data Sync** - All operations save directly to MSSQL database
-- **Route Status Management** - Track routes from Not Started → Ongoing → Completed
-- **Interactive Dashboards** - Fuel efficiency trends, daily route activity, and active vehicle monitoring
-- **Swagger/OpenAPI** for API documentation
+**Gerçek zamanlı filo ve rota yönetim platformu.**
+.NET 8 + React ile Clean Architecture üzerine inşa edilmiştir.
 
-## 📁 Project Structure
-
-```
-FleetTrack360/
-├── README.md                     # This file
-├── src/
-│   ├── FleetTrack360.API/        # Web API project (controllers and program entry point)
-│   ├── FleetTrack360.Application/ # Application layer (interfaces for services)
-│   ├── FleetTrack360.Domain/     # Domain layer (entities and enums)
-│   └── FleetTrack360.Infrastructure/ # Infrastructure layer (EF Core, repositories, services)
-├── frontend/                      # React frontend application
-│   ├── src/
-│   │   ├── pages/                # Dashboard, Vehicles, Routes, Reports, Notifications
-│   │   ├── services/             # API service layer
-│   │   └── components/           # Reusable UI components
-│   └── package.json
-└── tests/
-    └── FleetTrack360.Tests/      # Unit tests
-```
-
-## 🏗️ Architecture
-
-### Domain Layer
-
-The **Domain** project contains core business entities:
-
-- `User` - System users with roles (Admin or Driver)
-- `Vehicle` - Tracked vehicles with fuel level, mileage, and route history
-- `Route` - Journeys with status tracking (Not Started, Ongoing, Completed)
-- `DailyReport` - Aggregated daily statistics
-- `Notification` - Alerts for low fuel or route deviations
-
-### Application Layer
-
-The **Application** project defines service interfaces:
-
-- `IAuthService` - User registration and authentication
-- `IVehicleService` - CRUD operations on vehicles
-- `IRouteService` - Route management and status updates
-- `IReportService` - Daily report generation
-- `INotificationService` - Notification retrieval and creation
-
-### Infrastructure Layer
-
-The **Infrastructure** project implements data access and business logic:
-
-- `FleetTrack360DbContext` - EF Core database context
-- `Repository<T>` - Generic repository for common CRUD operations
-- Service implementations for all application interfaces
-- `DependencyInjection` - DI container configuration
-
-### API Layer
-
-The **API** project exposes REST endpoints:
-
-- `AuthController` - `/api/auth/register`, `/api/auth/login`
-- `VehiclesController` - `/api/vehicles` - Full CRUD operations
-- `RoutesController` - `/api/routes` - Route creation and status management
-- `ReportsController` - `/api/reports/daily` - Daily report generation
-- `NotificationsController` - `/api/notifications` - Notification management
-
-### Frontend Layer
-
-The **React** frontend provides:
-
-- **Dashboard** - Overview with active vehicles, route statistics, and interactive charts
-- **Vehicles Management** - Add, edit, delete, and monitor vehicles
-- **Routes Management** - Create routes and update status (Not Started → Ongoing → Completed)
-- **Reports** - Analytics and insights with data visualization
-- **Notifications** - Real-time alerts and notifications
-
-## 🛠️ Prerequisites
-
-- **.NET 8 SDK** - [Download here](https://dotnet.microsoft.com/download/dotnet/8.0)
-- **Node.js** (v16 or higher) - [Download here](https://nodejs.org/)
-- **SQL Server** (Local or Express edition) - [Download here](https://www.microsoft.com/sql-server/sql-server-downloads)
-- **npm** or **yarn** - Comes with Node.js
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/FleetTrack360.git
-cd FleetTrack360
-```
-
-### 2. Database Setup
-
-1. Open **SQL Server Management Studio** (SSMS)
-
-2. Connect to your SQL Server instance (e.g., `localhost\SQLEXPRESS`)
-
-3. Create a new database:
-   ```sql
-   CREATE DATABASE fleettrack360;
-   ```
-
-4. Create the required tables:
-   ```sql
-   USE [fleettrack360];
-   GO
-
-   -- Users Table
-   CREATE TABLE [dbo].[Users] (
-       [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-       [Username] NVARCHAR(255) NOT NULL,
-       [PasswordHash] NVARCHAR(MAX) NOT NULL,
-       [Role] INT NOT NULL DEFAULT 1
-   );
-   GO
-
-   -- Vehicles Table
-   CREATE TABLE [dbo].[Vehicles] (
-       [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-       [LicensePlate] NVARCHAR(50) NOT NULL,
-       [Make] NVARCHAR(100) NULL,
-       [Model] NVARCHAR(100) NULL,
-       [Year] INT NOT NULL,
-       [FuelLevel] FLOAT NOT NULL DEFAULT 0,
-       [Mileage] FLOAT NOT NULL DEFAULT 0
-   );
-   GO
-
-   -- Routes Table
-   CREATE TABLE [dbo].[Routes] (
-       [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-       [VehicleId] UNIQUEIDENTIFIER NOT NULL,
-       [StartLocation] NVARCHAR(255) NOT NULL,
-       [EndLocation] NVARCHAR(255) NOT NULL,
-       [StartTime] DATETIME2 NOT NULL,
-       [EndTime] DATETIME2 NOT NULL,
-       [DistanceKm] FLOAT NOT NULL,
-       [FuelUsed] FLOAT NOT NULL,
-       [Status] INT NOT NULL DEFAULT 0,
-       CONSTRAINT [FK_Routes_Vehicles_VehicleId] FOREIGN KEY ([VehicleId]) 
-           REFERENCES [dbo].[Vehicles] ([Id]) ON DELETE CASCADE
-   );
-   GO
-
-   -- Notifications Table
-   CREATE TABLE [dbo].[Notifications] (
-       [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-       [VehicleId] UNIQUEIDENTIFIER NOT NULL,
-       [Type] INT NOT NULL,
-       [Message] NVARCHAR(MAX) NOT NULL,
-       [Date] DATETIME2 NOT NULL,
-       CONSTRAINT [FK_Notifications_Vehicles_VehicleId] FOREIGN KEY ([VehicleId]) 
-           REFERENCES [dbo].[Vehicles] ([Id]) ON DELETE CASCADE
-   );
-   GO
-
-   -- DailyReports Table
-   CREATE TABLE [dbo].[DailyReports] (
-       [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-       [Date] DATETIME2 NOT NULL,
-       [TotalVehicles] INT NOT NULL,
-       [AvgFuelConsumption] FLOAT NOT NULL,
-       [TotalDistanceKm] FLOAT NOT NULL
-   );
-   GO
-
-   -- Create Indexes for better performance
-   CREATE INDEX [IX_Routes_VehicleId] ON [dbo].[Routes]([VehicleId]);
-   CREATE INDEX [IX_Routes_StartTime] ON [dbo].[Routes]([StartTime]);
-   CREATE INDEX [IX_Routes_Status] ON [dbo].[Routes]([Status]);
-   CREATE INDEX [IX_Notifications_VehicleId] ON [dbo].[Notifications]([VehicleId]);
-   CREATE INDEX [IX_Notifications_Date] ON [dbo].[Notifications]([Date]);
-   GO
-   ```
-
-   **Note:** Alternatively, the application will automatically create tables on first run using Entity Framework Core's `EnsureCreated()` method. However, manually creating tables gives you more control over the database structure.
-
-### 3. Configure Backend
-
-1. Navigate to the API project:
-   ```bash
-   cd src/FleetTrack360.API
-   ```
-
-2. Update the connection string in `appsettings.json`:
-   ```json
-   {
-     "ConnectionStrings": {
-       "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=fleettrack360;Integrated Security=true;TrustServerCertificate=true;"
-     }
-   }
-   ```
-
-3. Restore dependencies and build:
-   ```bash
-   dotnet restore
-   dotnet build
-   ```
-
-### 4. Configure Frontend
-
-1. Navigate to the frontend directory:
-   ```bash
-   cd ../../frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-### 5. Run the Application
-
-**Option 1: Manual Start (Recommended for Development)**
-
-1. Start the backend:
-   ```bash
-   cd src/FleetTrack360.API
-   dotnet run
-   ```
-   Backend will run on `http://localhost:5000`
-
-2. In a new terminal, start the frontend:
-   ```bash
-   cd frontend
-   npm start
-   ```
-   Frontend will run on `http://localhost:3000`
-
-**Option 2: Automatic Start**
-
-The backend automatically launches the frontend when it starts. Simply run:
-```bash
-cd src/FleetTrack360.API
-dotnet run
-```
-
-### 6. Access the Application
-
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-- **Swagger UI**: http://localhost:5000/swagger
-
-## 📊 Features Overview
-
-### Dashboard
-- Real-time statistics (Active Vehicles, Active Routes, Total Vehicles, Notifications)
-- Fuel Efficiency Trend Chart (last 7 days from database)
-- Daily Route Activity Chart
-- Active vehicles monitoring
-- Recent routes overview
-
-### Vehicles Management
-- Add, edit, and delete vehicles
-- Track fuel levels and mileage
-- View vehicle route history
-- Real-time database synchronization
-
-### Routes Management
-- Create routes with start/end locations
-- Track route status:
-  - **Not Started** (0) - Route created but not begun
-  - **Ongoing** (1) - Route currently in progress
-  - **Completed** (2) - Route finished
-- Update route status with save confirmation
-- View route details (distance, fuel used, efficiency)
-
-### Reports & Analytics
-- Fuel efficiency analytics
-- Vehicle usage statistics
-- Monthly performance reports
-- Data visualization with charts
-
-## 🔧 Technology Stack
-
-### Backend
-- **.NET 8** - Framework
-- **ASP.NET Core Web API** - RESTful API
-- **Entity Framework Core** - ORM
-- **SQL Server** - Database
-- **Swagger/OpenAPI** - API Documentation
-
-### Frontend
-- **React** - UI Framework
-- **Recharts** - Data Visualization
-- **Lucide React** - Icons
-- **Axios** - HTTP Client
-- **React Router** - Navigation
-
-## 📝 Database Schema
-
-### Tables
-- `Users` - System users
-- `Vehicles` - Fleet vehicles
-- `Routes` - Vehicle routes with status tracking
-- `Notifications` - System notifications
-- `DailyReports` - Aggregated daily reports
-
-### Route Status Values
-- `0` = Not Started
-- `1` = Ongoing
-- `2` = Completed
-
-## 🧪 Testing
-
-Run unit tests:
-```bash
-dotnet test
-```
-
-## 📄 Notes
-
-- The application uses **Windows Authentication** by default for SQL Server. Update the connection string if using SQL Server Authentication.
-- All data operations are **real-time** and directly interact with the database - no mock data or caching.
-- The frontend automatically refreshes every 30 seconds and on window focus.
-- Route status changes require a "Save" button click to persist to the database.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## license
-
-This project is provided as-is.
-
-## 👤 Author
-
-harunidev - [GitHub](https://github.com/harunidev)
+</div>
 
 ---
 
-**Note**: This application is designed for local development and may require additional configuration for production deployment.
+## İçindekiler
+
+- [Genel Bakış](#genel-bakış)
+- [Mimari](#mimari)
+- [Veritabanı Şeması](#veritabanı-şeması)
+- [Veri Akışı](#veri-akışı)
+- [Geliştirme Fazları](#geliştirme-fazları)
+- [Kurulum](#kurulum)
+- [API Referansı](#api-referansı)
+- [Teknoloji Yığını](#teknoloji-yığını)
+
+---
+
+## Genel Bakış
+
+FleetTrack360, araç filolarını takip etmek, rotaları yönetmek ve yakıt verimliliğini analiz etmek için tasarlanmış tam yığın bir uygulamadır. Dashboard 30 saniyede bir otomatik yenilenir; tüm operasyonlar doğrudan veritabanıyla senkronize çalışır.
+
+**Temel Yetenekler:**
+
+- Araç takibi — yakıt seviyesi, kilometre, rota geçmişi
+- Rota yaşam döngüsü yönetimi — `Başlamadı → Devam Ediyor → Tamamlandı`
+- Günlük yakıt verimliliği ve mesafe analitiği
+- Bildirim sistemi — düşük yakıt ve rota sapması uyarıları
+- JWT tabanlı kimlik doğrulama
+
+---
+
+## Mimari
+
+```mermaid
+graph TD
+    subgraph Frontend["Frontend (React 18)"]
+        UI[Pages & Components]
+        SVC[API Service Layer]
+        UI --> SVC
+    end
+
+    subgraph API["API Layer (ASP.NET Core 8)"]
+        AUTH[AuthController]
+        VEH[VehiclesController]
+        RTE[RoutesController]
+        RPT[ReportsController]
+        NTF[NotificationsController]
+    end
+
+    subgraph Application["Application Layer"]
+        IAUTH[IAuthService]
+        IVEH[IVehicleService]
+        IRTE[IRouteService]
+        IRPT[IReportService]
+        INTF[INotificationService]
+    end
+
+    subgraph Infrastructure["Infrastructure Layer"]
+        ASVC[AuthService]
+        VSVC[VehicleService]
+        RSVC[RouteService]
+        REPO["Repository&lt;T&gt;"]
+        CTX[FleetTrack360DbContext]
+    end
+
+    subgraph Domain["Domain Layer"]
+        ENT[Entities & Enums]
+    end
+
+    DB[(SQLite / SQL Server)]
+
+    SVC -->|HTTP + JWT| AUTH & VEH & RTE & RPT & NTF
+    AUTH --> IAUTH
+    VEH --> IVEH
+    RTE --> IRTE
+    RPT --> IRPT
+    NTF -->INTF
+    IAUTH --> ASVC
+    IVEH --> VSVC
+    IRTE --> RSVC
+    ASVC & VSVC & RSVC --> REPO
+    REPO --> CTX
+    CTX --> DB
+    ENT -.->|Bağımlılık yok| Application
+    Application -.-> Infrastructure
+```
+
+### Proje Yapısı
+
+```
+FleetTrack360/
+├── src/
+│   ├── FleetTrack360.Domain/          # Entities, Enums
+│   ├── FleetTrack360.Application/     # Service Interfaces
+│   ├── FleetTrack360.Infrastructure/  # EF Core, Repositories, Services
+│   └── FleetTrack360.API/             # Controllers, Program.cs
+├── frontend/
+│   └── src/
+│       ├── pages/        # Dashboard, Vehicles, Routes, Reports, Notifications
+│       ├── components/   # Layout, ortak bileşenler
+│       └── services/     # api.js — Axios istemcisi
+└── tests/
+    └── FleetTrack360.Tests/
+```
+
+---
+
+## Veritabanı Şeması
+
+```mermaid
+erDiagram
+    Users {
+        uuid Id PK
+        string Username
+        string PasswordHash
+        string PasswordSalt
+        int Role
+    }
+
+    Vehicles {
+        uuid Id PK
+        string LicensePlate
+        string Make
+        string Model
+        int Year
+        float FuelLevel
+        float Mileage
+    }
+
+    Routes {
+        uuid Id PK
+        uuid VehicleId FK
+        string StartLocation
+        string EndLocation
+        datetime StartTime
+        datetime EndTime
+        float DistanceKm
+        float FuelUsed
+        int Status
+    }
+
+    Notifications {
+        uuid Id PK
+        uuid VehicleId FK
+        int Type
+        string Message
+        datetime Date
+    }
+
+    DailyReports {
+        uuid Id PK
+        datetime Date
+        int TotalVehicles
+        float AvgFuelConsumption
+        float TotalDistanceKm
+    }
+
+    Vehicles ||--o{ Routes : "sahip olur"
+    Vehicles ||--o{ Notifications : "tetikler"
+```
+
+---
+
+## Veri Akışı
+
+```mermaid
+sequenceDiagram
+    participant U as Kullanıcı (Browser)
+    participant R as React
+    participant A as ASP.NET Core API
+    participant S as Service Layer
+    participant DB as SQLite DB
+
+    U->>R: Sayfa yükle / eylem yap
+    R->>A: HTTP İsteği (JWT Bearer)
+    A->>A: Token doğrula
+    A->>S: İş mantığını çalıştır
+    S->>DB: EF Core sorgusu
+    DB-->>S: Veri
+    S-->>A: Sonuç
+    A-->>R: JSON yanıt
+    R-->>U: UI güncelle
+
+    Note over R,A: 30 saniyede bir otomatik yenileme
+```
+
+### Rota Yaşam Döngüsü
+
+```mermaid
+stateDiagram-v2
+    [*] --> Başlamadı: Rota oluşturuldu (POST /api/routes)
+    Başlamadı --> DevamEdiyor: Durum güncellendi (PUT)
+    DevamEdiyor --> Tamamlandı: Durum güncellendi (PUT)
+    Tamamlandı --> [*]
+
+    Başlamadı: 🟡 Başlamadı\nStatus = 0
+    DevamEdiyor: 🔵 Devam Ediyor\nStatus = 1
+    Tamamlandı: 🟢 Tamamlandı\nStatus = 2
+```
+
+---
+
+## Geliştirme Fazları
+
+### Faz 1 — Temel Altyapı ✅
+
+> Proje iskeleti ve temel CRUD operasyonları
+
+- [x] Clean Architecture kurulumu (Domain / Application / Infrastructure / API)
+- [x] Entity Framework Core entegrasyonu (SQLite & SQL Server desteği)
+- [x] Generic `Repository<T>` implementasyonu
+- [x] Araç, Rota, Bildirim ve Rapor servisleri
+- [x] REST API controller'ları
+- [x] React frontend — Dashboard, Vehicles, Routes, Reports, Notifications sayfaları
+- [x] Recharts ile yakıt verimliliği ve rota aktivite grafikleri
+- [x] 30 saniyelik otomatik dashboard yenileme
+- [x] Seed data ile geliştirme ortamı kurulumu
+
+### Faz 2 — Güvenlik & Kalite ✅
+
+> Kimlik doğrulama, şifreleme ve veri doğrulama
+
+- [x] PBKDF2 (100k iterasyon) + rastgele salt ile güvenli şifre hashleme
+- [x] Gerçek JWT token üretimi — HMAC-SHA256, 8 saatlik geçerlilik
+- [x] `ValidateIssuerSigningKey` ve `ValidateLifetime` aktif edildi
+- [x] JWT Secret ortam değişkeni / config'ten okunuyor (hardcoded değil)
+- [x] Controller input validation — boş alan, aralık ve mantık kontrolleri
+- [x] Axios request interceptor — her isteğe otomatik Bearer token ekleme
+- [x] Axios response interceptor — 401'de token temizleme
+- [x] Frontend filter bug'ları düzeltildi (Notifications, Routes)
+- [x] Veritabanı dosyaları `.gitignore`'a alındı
+- [x] `appsettings.json`, `.env`, gizli dosyalar gitignore'da
+
+### Faz 3 — Özellik Genişletme 🔄 *(Planlı)*
+
+> Kullanıcı deneyimi ve operasyonel özellikler
+
+- [ ] Giriş / kayıt sayfası (Login/Register UI)
+- [ ] JWT yenileme token (refresh token) mekanizması
+- [ ] Kullanıcı rolü bazlı yetkilendirme (`Admin` / `Driver`)
+- [ ] Araç bazlı rota geçmişi sayfası
+- [ ] Bildirim okundu/okunmadı durumu
+- [ ] Pagination — araç ve rota listeleri için
+- [ ] CSV/Excel rapor dışa aktarma
+- [ ] Düşük yakıt otomatik bildirim tetikleyicisi
+
+### Faz 4 — Üretim Hazırlığı 🔄 *(Planlı)*
+
+> Ölçeklenebilirlik, gözlemlenebilirlik ve dağıtım
+
+- [ ] Rate limiting — auth endpoint'lerine brute-force koruması
+- [ ] Serilog ile yapılandırılmış loglama
+- [ ] Birim ve entegrasyon testleri
+- [ ] Docker & docker-compose konfigürasyonu
+- [ ] GitHub Actions CI/CD pipeline
+- [ ] Health check endpoint'leri
+- [ ] HTTPS zorunlu kılınması (üretimde)
+
+---
+
+## Kurulum
+
+### Gereksinimler
+
+| Araç | Versiyon |
+|------|---------|
+| .NET SDK | 8.0+ |
+| Node.js | 16+ |
+| npm | 8+ |
+
+### 1. Repoyu Klonla
+
+```bash
+git clone https://github.com/harunidev/FleetTrack360.git
+cd FleetTrack360
+```
+
+### 2. Backend Yapılandırması
+
+`appsettings.json.example` dosyasını kopyala:
+
+```bash
+cp src/FleetTrack360.API/appsettings.json.example src/FleetTrack360.API/appsettings.json
+```
+
+`appsettings.json` içindeki değerleri düzenle:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "SQLite"
+  },
+  "Jwt": {
+    "Secret": "EN_AZ_32_KARAKTER_GUCLU_BIR_SECRET_YAZIN"
+  }
+}
+```
+
+> **Not:** `DefaultConnection` değeri `"SQLite"` bırakılırsa uygulama SQLite kullanır ve `fleettrack360.db` dosyasını otomatik oluşturur.
+
+### 3. Backend'i Başlat
+
+```bash
+cd src/FleetTrack360.API
+dotnet restore
+dotnet run
+```
+
+Backend `http://localhost:5000` adresinde çalışır.
+Swagger UI: `http://localhost:5000/swagger`
+
+### 4. Frontend'i Başlat
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Frontend `http://localhost:3000` adresinde açılır.
+
+---
+
+## API Referansı
+
+### Auth
+
+| Method | Endpoint | Açıklama |
+|--------|----------|----------|
+| `POST` | `/api/auth/register` | Kullanıcı kaydı |
+| `POST` | `/api/auth/login` | Giriş — JWT döner |
+
+### Araçlar
+
+| Method | Endpoint | Açıklama |
+|--------|----------|----------|
+| `GET` | `/api/vehicles` | Tüm araçları listele |
+| `GET` | `/api/vehicles/{id}` | Araç detayı |
+| `POST` | `/api/vehicles` | Yeni araç ekle |
+| `PUT` | `/api/vehicles/{id}` | Araç güncelle |
+| `DELETE` | `/api/vehicles/{id}` | Araç sil |
+
+### Rotalar
+
+| Method | Endpoint | Açıklama |
+|--------|----------|----------|
+| `GET` | `/api/routes` | Tüm rotaları listele |
+| `GET` | `/api/routes/{id}` | Rota detayı |
+| `GET` | `/api/routes/vehicle/{vehicleId}` | Araca ait rotalar |
+| `POST` | `/api/routes` | Yeni rota oluştur |
+| `PUT` | `/api/routes/{id}` | Rota güncelle / durum değiştir |
+
+### Bildirimler & Raporlar
+
+| Method | Endpoint | Açıklama |
+|--------|----------|----------|
+| `GET` | `/api/notifications` | Tüm bildirimleri listele |
+| `POST` | `/api/notifications` | Bildirim oluştur |
+| `GET` | `/api/reports/daily` | Günlük rapor |
+
+---
+
+## Teknoloji Yığını
+
+### Backend
+
+| Teknoloji | Versiyon | Amaç |
+|-----------|---------|------|
+| .NET | 8.0 | Framework |
+| ASP.NET Core | 8.0 | Web API |
+| Entity Framework Core | 8.0 | ORM |
+| SQLite / SQL Server | — | Veritabanı |
+| JWT Bearer | 8.0 | Kimlik doğrulama |
+| Swagger / OpenAPI | 6.5 | API dokümantasyonu |
+
+### Frontend
+
+| Teknoloji | Versiyon | Amaç |
+|-----------|---------|------|
+| React | 18.2 | UI framework |
+| React Router | 6.3 | Navigasyon |
+| Axios | 1.4 | HTTP istemcisi |
+| Recharts | 2.7 | Grafik / veri görselleştirme |
+| Tailwind CSS | 3.3 | Stil |
+| Lucide React | 0.263 | İkon seti |
+
+---
+
+## Katkı
+
+Pull request'ler kabul edilir. Büyük değişiklikler için önce bir issue açmanız önerilir.
+
+## Yazar
+
+**harunidev** — [github.com/harunidev](https://github.com/harunidev)
